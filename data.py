@@ -15,9 +15,3 @@ def load_onto_notes(path):
     if len(sentence)>0:
         sentences.append(sentence)
     return sentences
-
-
-
-
-res = load_onto_notes("../pos_tagger_data/train.col")
-print(res)
