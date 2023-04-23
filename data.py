@@ -1,5 +1,10 @@
 
 def load_onto_notes(path):
+    """
+    Reads a filepath and returns a list of sentences. Each sentence
+    is a list of tuples. Each tuple contains a word and its POS tag.
+    """
+
     sentences = []
     with open(path) as file:
         sentence = []
