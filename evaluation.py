@@ -142,12 +142,12 @@ if __name__ == "__main__":
     """
     from data import LoadOntoNotes
     dl = LoadOntoNotes("./train.col")
-    sentences = dl.get_tokens()
+    sentences = dl.get_sentences()
     #
     _,labels1 = zip(*sentences[0])
     _,labels2 = zip(*sentences[1])
     #
     confmat = ConfusionMatrix.from_data(labels1, labels1)
-    print("\n\n\n",confmat.f1_scores())
+    print("\n\n\n",confmat.f1_scores(),"\n\n")
+    #
     confmat = ConfusionMatrix.from_data(labels1, labels2)
-    print("\n\n\n",confmat.f1_scores())

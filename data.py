@@ -19,7 +19,7 @@ class LoadOntoNotes:
     """
     def __init__(self, path):
         self.path = path 
-
+    
     def read_file(self):
         corpus = open(self.path)
         return corpus 
