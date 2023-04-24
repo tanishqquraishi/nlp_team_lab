@@ -29,10 +29,13 @@ class ConfusionMatrix(object):
         return {"P":P, "R":R, "F1":F1}
     
     @staticmethod
-    def from_data(gold, pred):
+    def from_data(gold, pred, nan=None):
         """
         Create a new confusion matrix from two lists of labels.
+        For what 'nan' is doing, please check the constructor.
         """
+        # Check that both sequences are same length
+        assert(len(gold)==len(pred))
         # Count confusions and collect all used tags
         conf = dict()
         all_tags = set()
@@ -53,7 +56,7 @@ class ConfusionMatrix(object):
                     if k not in conf[t]:
                         conf[t][k] = 0
         ##
-        return ConfusionMatrix(conf, all_tags)
+        return ConfusionMatrix(conf, all_tags, nan)
     
     def get_confusions(self, tag):
         """
@@ -134,3 +137,17 @@ if __name__ == "__main__":
     print(confmat.micro_f1())
     print("No Avg.:")
     print(confmat.f1_scores())
+    """
+    Testing goes here
+    """
+    from data import LoadOntoNotes
+    dl = LoadOntoNotes("./train.col")
+    sentences = dl.get_tokens()
+    #
+    _,labels1 = zip(*sentences[0])
+    _,labels2 = zip(*sentences[1])
+    #
+    confmat = ConfusionMatrix.from_data(labels1, labels1)
+    print("\n\n\n",confmat.f1_scores())
+    confmat = ConfusionMatrix.from_data(labels1, labels2)
+    print("\n\n\n",confmat.f1_scores())

@@ -37,6 +37,9 @@ class LoadOntoNotes:
             sentences.append(tok_pos_pairs)
         return sentences
 
-
-lon = LoadOntoNotes("train.col")
-print(lon.get_tokens())
+if __name__ == "__main__":
+    """
+    Testing goes here
+    """
+    lon = LoadOntoNotes("train.col")
+    print(lon.get_tokens())
