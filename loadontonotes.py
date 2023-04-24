@@ -1,6 +1,20 @@
 class LoadOntoNotes:
     """
     Takes a path, reads the file and returns token and POS pairs 
+    ...
+    
+    Attributes
+    ----------
+    
+    path : str
+    
+    Methods
+    -------
+    read_file():
+        opens file from path
+        
+    get_tokens():
+        returns pairs of words and their POS tags
     """
     def __init__(self, path):
         self.path = path 
