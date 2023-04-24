@@ -1,13 +1,24 @@
+from data import LoadOntoNotes
+
 ## Load data
+train = LoadOntoNotes("./train.col").get_sentences()
+dev   = LoadOntoNotes("./dev.col").get_sentences()
+print("{} ({}): {}".format(train[0].tokens.text, train[0].tokens.gold_label, train[0].tokens.features))
 
-## Extract features
+## Extract features on sentence level
+for s in train:
+    s.extract_features()
+for s in dev:
+    s.extract_features()
+print("{} ({}): {}".format(train[0].tokens.text, train[0].tokens.gold_label, train[0].tokens.features))
 
-## Train model
+## Get single tokens
+train = [token for sent in train for token in sent.tokens]
+dev   = [token for sent in dev   for token in sent.tokens]
+print("{} ({}): {}".format(train[0].token, train[0].gold_label, train[0].features))
 
-## Store model
-
-
-## Evaluate model on test
-# Predict test data
-# Evaluate test data
+## Train model (TBD)
+model = Perceptron(nclasses=None)
+model.fit(train, dev)
+model.save(".../.../")
 
