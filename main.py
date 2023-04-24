@@ -1,7 +1,6 @@
 from data import LoadOntoNotes
 
 
-
 ## Load data
 train = LoadOntoNotes("./train.col").get_sentences()
 dev   = LoadOntoNotes("./dev.col").get_sentences()
