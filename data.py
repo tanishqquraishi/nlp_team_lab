@@ -1,22 +1,42 @@
-
-def load_onto_notes(path):
+class LoadOntoNotes:
     """
-    Reads a filepath and returns a list of sentences. Each sentence
-    is a list of tuples. Each tuple contains a word and its POS tag.
+    Takes a path, reads the file and returns token and POS pairs 
+    ...
+    
+    Attributes
+    ----------
+    
+    path : str
+    
+    Methods
+    -------
+    read_file():
+        opens file from path
+        
+    get_tokens():
+        returns pairs of words and their POS tags
     """
+    def __init__(self, path):
+        self.path = path 
 
-    sentences = []
-    with open(path) as file:
-        sentence = []
-        for line in file:
-            vals = line.strip().split("\t")
-            if len(vals)==1:
-                sentences.append(sentence)
-                sentence = []
+    def read_file(self):
+        corpus = open(self.path)
+        return corpus 
+    
+    def get_tokens(self):
+        sentences = []
+        tok_pos_pairs = []
+        for lines in self.read_file():
+            toks = lines.strip().split("\t")
+            if len(toks) == 2:  
+                tok_pos_pairs.append(toks)
             else:
-                assert(len(vals)==2)
-                token, pos = vals
-                sentence.append(tuple(vals))
-    if len(sentence)>0:
-        sentences.append(sentence)
-    return sentences
+                sentences.append(tok_pos_pairs)
+                tok_pos_pairs = []
+        if tok_pos_pairs:
+            sentences.append(tok_pos_pairs)
+        return sentences
+
+
+lon = LoadOntoNotes("train.col")
+print(lon.get_tokens())
