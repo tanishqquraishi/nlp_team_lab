@@ -8,6 +8,7 @@ class Token(object):
         self.pred_label = pred_label
         self.features = feats
 
+
 class Sentence(object):
     """
     A sentence class holding tokens and for extacting features.
@@ -21,6 +22,7 @@ class Sentence(object):
         """
         self.tokens[0].features = ["Feat1", "Feat123", "..."]
         pass
+
 
 class LoadOntoNotes:
     """
