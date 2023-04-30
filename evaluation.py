@@ -26,7 +26,7 @@ class ConfusionMatrix(object):
         d = (P+R)
         F1 = (2*P*R / d) if d!=0 else self.nan
         
-        return {"P":P, "R":R, "F1":F1}
+        return {"P":P*100, "R":R*100, "F1":F1*100}
     
     @staticmethod
     def from_data(gold, pred, nan=None):
@@ -144,8 +144,8 @@ if __name__ == "__main__":
     dl = LoadOntoNotes("./train.col")
     sentences = dl.get_sentences()
     #
-    _,labels1 = zip(*sentences[0])
-    _,labels2 = zip(*sentences[1])
+    labels1 = [t.gold_label for t in sentences[0].tokens]
+    labels2 = [t.gold_label for t in sentences[1].tokens]
     #
     confmat = ConfusionMatrix.from_data(labels1, labels1)
     print("\n\n\n",confmat.f1_scores(),"\n\n")

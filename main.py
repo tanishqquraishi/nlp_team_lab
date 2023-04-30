@@ -23,7 +23,7 @@ print("'{}' ({}): {}".format(train[0].text, train[0].gold_label, train[0].featur
 
 ## Train model (TBD)
 model = Perceptron()
-train_hist = model.fit(train, dev, learning_rate=0.1, nepochs=10, lr_decay=0.01)
+train_hist = model.fit(train, dev, learning_rate=0.001, nepochs=10, lr_decay=0.01)
 #model.save(".../.../") (TBD)
 
 ## For model selection and testing

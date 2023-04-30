@@ -8,10 +8,14 @@ class featureExt:
         self.sent =  sent
     
     def prefix(self, n):
-        return "prefix="+self.token.text[:n]
+        if len(self.token.text)>=n:
+            return "prefix="+self.token.text[:n]
+        return None
     
     def suffix(self, n):
-        return "suffix="+self.token.text[-n:]
+        if len(self.token.text)>=n:
+            return "suffix="+self.token.text[-n:]
+        return None
     
     def isFirst(self):
         """

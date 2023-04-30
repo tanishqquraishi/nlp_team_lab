@@ -24,7 +24,7 @@ class Perceptron(object):
     def _evaluate(self, tokens):
         pred_tokens = [self.scores(token.features)[0] for token in tokens]
         gold_tokens = [token.gold_label for token in tokens]
-        ev = ConfusionMatrix.from_data(gold_tokens, pred_tokens)
+        ev = ConfusionMatrix.from_data(gold_tokens, pred_tokens, nan=0)
         macro = ev.macro_f1()
         micro = ev.micro_f1()
         return macro, micro
@@ -58,7 +58,7 @@ class Perceptron(object):
             ## Randomize order of exaples
             random.shuffle(train)
             ## Iterate each example
-            for i,example in enumerate(train):
+            for i,example in enumerate(train, start=1):
                 # predict output scores (with current weights)
                 _,pred = self.scores(example.features)
                 # calculate update for each class
@@ -70,19 +70,22 @@ class Perceptron(object):
                         d = 0-pscore
                     # update each feature for this class
                     for f in example.features:
-                        if f in self.features:
+                        try: # try is faster than if check for keys in dict
                             self.weights[ptag][f] += d*learning_rate
+                        except KeyError:
+                            pass
                 if i%20000==0:
-                    print("Iteration: {:<7d}    learning-rate: {}".format(i, learning_rate))
+                    print("Iteration: {:<7d}".format(i))
             # update learning rate
-            learning_rate *= (1-lr_decay)
+            learning_rate *= (1.0-lr_decay)
+            print("LEARNING RATE is now", learning_rate)
             # Evaluate
             macro, micro = self._evaluate(train)
-            print("Epoch: {:3d}   TRAIN   micro: {} macro: {}".format(e, micro["F1"], macro["F1"]))
+            print("Epoch: {:<3d}   TRAIN   micro: {:6.2f} macro: {:6.2f}".format(e, micro["F1"], macro["F1"]))
             train_eval = {"microF1":micro["F1"], "macroF1":macro["F1"]}
             #
             macro, micro = self._evaluate(dev)
-            print("Epoch: {:3d}     DEV   micro: {} macro: {}".format(e, micro["F1"], macro["F1"]))
+            print("Epoch: {:<3d}     DEV   micro: {:6.2f} macro: {:6.2f}".format(e, micro["F1"], macro["F1"]))
             dev_eval = {"microF1":micro["F1"], "macroF1":macro["F1"]}
             #
             train_history.append({"train":train_eval, "dev":dev_eval})
@@ -96,8 +99,10 @@ class Perceptron(object):
         scores = {t:0 for t in self.classes}
         for feat in feat_vec:
             for tag in self.weights:
-                if feat in self.weights[tag]: # ingore unknown featuers
+                try: # try is faster than if check for keys in dict
                     scores[tag] += self.weights[tag][feat]
+                except KeyError: # ingore unknown featuers
+                    pass
         max_tag,_ = max(scores.items(), key=lambda x:x[1])
         return max_tag,scores
 
