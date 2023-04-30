@@ -12,7 +12,16 @@ class Perceptron(object):
     def __init__(self,):
         self.weights = None
     
-    def fit(self, train, dev, learning_rate, nepochs, minff=5, maxff=float("+inf")):
+    def _count_feautres(self, tokens):
+        counts = dict()
+        for t in tokens:
+            for f in t.features:
+                if f not in counts:
+                    counts[f] = 0
+                counts[f] += 1
+        return counts
+    
+    def fit(self, train, dev, learning_rate, nepochs, lr_decay=0.0, minff=5, maxff=float("+inf")):
         """
         Input: list of sentences, list of sentences, ...
         
@@ -21,10 +30,19 @@ class Perceptron(object):
         Returns list of train and dev metrics over the epochs.
         """
         
-        ## Init new weights
+        ## Count all classes in train (add UNK)
         self.classes = tuple(set([t.gold_label for t in train]))
-        self.weights = dict()
-        counts = dict()
+        ## Count all features
+        counts = self._count_feautres(train)
+        # keep only features seen often but not too often (minff, maxff)
+        for f in list(counts.keys()):
+            if (counts[f]<minff) or (counts[f]>maxff):
+                del counts[f]
+        self.features = tuple(counts.keys())
+        ## Init new weights
+        self.weights = {c:{f:0 for f in self.features} for c in self.classes}
+        
+        print("Starting estimation for {} classes and {} features and {} train examples".format(len(self.classes), len(self.features), len(train)))
         
         ## Iterate for each epoch
         for e in range(nepochs):
@@ -34,24 +52,21 @@ class Perceptron(object):
             for i,example in enumerate(train):
                 # predict output scores (with current weights)
                 _,pred = self.scores(example.features)
-                # calculate update for each label
+                # calculate update for each class
                 for ptag, pscore in pred.items():
-                    # calculate update direction
+                    # calculate update direction for this class
                     if ptag==example.gold_label:
                         d = 1-pscore
                     else:
                         d = 0-pscore
-                    # calculate update for each feature
-                    if ptag not in self.weights:
-                        self.weights[ptag] = dict()
+                    # update each feature for this class
                     for f in example.features:
-                        if f not in self.weights:
-                            self.weights[ptag][f] = 0
-                            counts[f] = 0
-                        self.weights[ptag][f] += d*learning_rate
-                        counts[f] += 1
-                if i%10000==0:
-                    print("Iteration: {:6d}    #seenFeatures {}".format(i, len(counts)))
+                        if f in self.features:
+                            self.weights[ptag][f] += d*learning_rate
+                # update learning rate
+                learning_rate *= (1-lr_decay)
+                if i%20000==0:
+                    print("Iteration: {:<7d}    learning-rate: {}".format(i, learning_rate))
             # Evaluate on dev
             pred_tokens = [self.scores(token.features)[0] for token in train]
             gold_tokens = [token.gold_label for token in train]
@@ -66,12 +81,6 @@ class Perceptron(object):
             macro = ev.macro_f1()["F1"]
             micro = ev.micro_f1()["F1"]
             print("Epoch: {:3d}     DEV   micro: {} macro: {}".format(e, micro, macro))
-        ## Delete features seen to often/rarely during training
-        for f in list(counts.keys()):
-            if (counts[f]<minff) or (counts[f]>maxff):
-                for t in self.weigthts:
-                    del self.weights[t][f]
-        ##
     
     def scores(self, feat_vec):
         """
