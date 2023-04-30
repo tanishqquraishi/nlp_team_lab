@@ -1,3 +1,7 @@
+from features import featureExt
+
+
+
 class Token(object):
     """
     A wrapper class holding token information.
@@ -20,8 +24,24 @@ class Sentence(object):
         """
         Extracts features for each token in this sentence.
         """
-        self.tokens[0].features = ["Feat1", "Feat123", "..."]
-        pass
+        for token in self.tokens:
+            ext = featureExt(token, self)
+            features = []
+            #
+            if ext.isFirst():
+                features.append("isFirst")
+            if ext.isLast():
+                features.append("isLast")
+            if ext.isDigit():
+                features.append("isDigit")
+            if ext.isPunct():
+                features.append("isPunct")
+            if ext.isNNP():
+                features.append("isNNP")
+            for f,v in ext.case().items():
+                if v is True:
+                    features.append(f)
+            token.features = features
 
 
 class LoadOntoNotes:
