@@ -21,6 +21,14 @@ class Perceptron(object):
                 counts[f] += 1
         return counts
     
+    def _evaluate(self, tokens):
+        pred_tokens = [self.scores(token.features)[0] for token in tokens]
+        gold_tokens = [token.gold_label for token in tokens]
+        ev = ConfusionMatrix.from_data(gold_tokens, pred_tokens)
+        macro = ev.macro_f1()
+        micro = ev.micro_f1()
+        return macro, micro
+    
     def fit(self, train, dev, learning_rate, nepochs, lr_decay=0.0, minff=5, maxff=float("+inf")):
         """
         Input: list of sentences, list of sentences, ...
@@ -45,6 +53,7 @@ class Perceptron(object):
         print("Starting estimation for {} classes and {} features and {} train examples".format(len(self.classes), len(self.features), len(train)))
         
         ## Iterate for each epoch
+        train_history = []
         for e in range(nepochs):
             ## Randomize order of exaples
             random.shuffle(train)
@@ -63,24 +72,21 @@ class Perceptron(object):
                     for f in example.features:
                         if f in self.features:
                             self.weights[ptag][f] += d*learning_rate
-                # update learning rate
-                learning_rate *= (1-lr_decay)
                 if i%20000==0:
                     print("Iteration: {:<7d}    learning-rate: {}".format(i, learning_rate))
-            # Evaluate on dev
-            pred_tokens = [self.scores(token.features)[0] for token in train]
-            gold_tokens = [token.gold_label for token in train]
-            ev = ConfusionMatrix.from_data(gold_tokens, pred_tokens)
-            macro = ev.macro_f1()
-            micro = ev.micro_f1()
-            print("Epoch: {:3d}   TRAIN   micro: {} macro: {}".format(e, micro, macro))
-            # Evaluate on train
-            pred_tokens = [self.scores(token.features)[0] for token in dev]
-            gold_tokens = [token.gold_label for token in dev]
-            ev = ConfusionMatrix.from_data(gold_tokens, pred_tokens)
-            macro = ev.macro_f1()["F1"]
-            micro = ev.micro_f1()["F1"]
-            print("Epoch: {:3d}     DEV   micro: {} macro: {}".format(e, micro, macro))
+            # update learning rate
+            learning_rate *= (1-lr_decay)
+            # Evaluate
+            macro, micro = self._evaluate(train)
+            print("Epoch: {:3d}   TRAIN   micro: {} macro: {}".format(e, micro["F1"], macro["F1"]))
+            train_eval = {"microF1":micro["F1"], "macroF1":macro["F1"]}
+            #
+            macro, micro = self._evaluate(dev)
+            print("Epoch: {:3d}     DEV   micro: {} macro: {}".format(e, micro["F1"], macro["F1"]))
+            dev_eval = {"microF1":micro["F1"], "macroF1":macro["F1"]}
+            #
+            train_history.append({"train":train_eval, "dev":dev_eval})
+        return train_history
     
     def scores(self, feat_vec):
         """
