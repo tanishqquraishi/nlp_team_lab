@@ -27,6 +27,11 @@ class Sentence(object):
         for token in self.tokens:
             ext = featureExt(token, self)
             features = []
+            # lexical? features
+            features.append(ext.suffix(2))
+            features.append(ext.suffix(3))
+            features.append(ext.prefix(2))
+            features.append(ext.prefix(3))
             #
             if ext.isFirst():
                 features.append("isFirst")

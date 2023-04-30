@@ -51,21 +51,21 @@ class Perceptron(object):
                         self.weights[ptag][f] += d*learning_rate
                         counts[f] += 1
                 if i%10000==0:
-                    print("     {:3d}".format(i))
+                    print("Iteration: {:6d}    #seenFeatures {}".format(i, len(counts)))
             # Evaluate on dev
             pred_tokens = [self.scores(token.features)[0] for token in train]
             gold_tokens = [token.gold_label for token in train]
             ev = ConfusionMatrix.from_data(gold_tokens, pred_tokens)
             macro = ev.macro_f1()
             micro = ev.micro_f1()
-            print("{:3d}   TRAIN   micro: {} macro: {}".format(e, micro, macro))
+            print("Epoch: {:3d}   TRAIN   micro: {} macro: {}".format(e, micro, macro))
             # Evaluate on train
             pred_tokens = [self.scores(token.features)[0] for token in dev]
             gold_tokens = [token.gold_label for token in dev]
             ev = ConfusionMatrix.from_data(gold_tokens, pred_tokens)
             macro = ev.macro_f1()["F1"]
             micro = ev.micro_f1()["F1"]
-            print("{:3d}     DEV   micro: {} macro: {}".format(e, micro, macro))
+            print("Epoch: {:3d}     DEV   micro: {} macro: {}".format(e, micro, macro))
         ## Delete features seen to often/rarely during training
         for f in list(counts.keys()):
             if (counts[f]<minff) or (counts[f]>maxff):

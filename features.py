@@ -6,7 +6,13 @@ class featureExt:
     def __init__(self, token, sent):
         self.token = token 
         self.sent =  sent
-
+    
+    def prefix(self, n):
+        return "prefix="+self.token.text[:n]
+    
+    def suffix(self, n):
+        return "suffix="+self.token.text[-n:]
+    
     def isFirst(self):
         """
         Checks if it's the first token in the sentence. 
