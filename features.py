@@ -32,10 +32,13 @@ class featureExt:
 
     def isDigit(self):
         """
-        Checks if token is a digit/ CD (cardinal number).
-        # Note: CD includes "2,500" or "million" too?
+        Checks if characters in a token are digits.
+        # Updated methods includes, for eg: "2,500".
         """
-        return self.token.text.isdigit()
+        for char in self.token.text:
+            if char.isdigit():
+        return True
+
 
     def isPunct(self):
         """
