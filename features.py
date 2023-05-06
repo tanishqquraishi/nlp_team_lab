@@ -44,10 +44,10 @@ class featureExt:
         punct = [".", ",", "!", "?", "'", ";", "...", ":", "/"]
         return self.token.text in punct
 
-    def isNNP(self): ## maybe rename this function, eg. typos
+    def isCapitalized(self): ## maybe rename this function, eg. typos
+                                ## resolved
         """
-        Checks if token is proper noun or not. Excludes first token in the sent.
-        # Note: what if the first token is an NNP? 
+        Checks if token is capitalized and excludes first token in the sentence.        
         """
         return self.token.text[0].isupper() and not self.isFirst()
 
@@ -58,3 +58,14 @@ class featureExt:
         features['is_titlecase'] = self.token.text.istitle()
         features['is_other'] = not (self.token.text.isupper() or self.token.text.islower() or self.token.text.istitle())
         return features
+    
+    def isNNP(self):
+    """
+    Checks if the token and the next one's first character are each capitalized.
+    Eg: Los Angeles.
+    """
+    index = self.sent.tokens.index(self.token)
+    if index + 1 < len(self.sent.tokens):
+        next_token = self.sent.tokens[index + 1]
+        return self.token.text[0].isupper() and next_token.text[0].isupper()
+    return False
