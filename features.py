@@ -37,7 +37,8 @@ class featureExt:
         """
         for char in self.token.text:
             if char.isdigit():
-        return True
+                return True
+            return False 
 
 
     def isPunct(self):
