@@ -45,7 +45,7 @@ class featureExt:
         """
         Checks if token is a punctuation. Excludes hyphen.
         """
-        punct = [".", ",", "!", "?", "'", ";", "...", ":", "/"]
+        punct = [".", ",", "!", "?", "'", ";", "...", ":", "/", "``"]
         return self.token.text in punct
 
     def isCapitalized(self): ## maybe rename this function, eg. typos
