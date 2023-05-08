@@ -1,0 +1,5 @@
+## First model run evaluation scores
+## EPOCH 0
+## TRAIN  micro:  79.58 macro:  53.07
+## DEV    micro:  80.15 macro:  57.45
+
