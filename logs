@@ -3,3 +3,6 @@
 ## TRAIN  micro:  79.58 macro:  53.07
 ## DEV    micro:  80.15 macro:  57.45
 
+## EPOCH 9
+## TRAIN  micro:  82.59 macro:  59.03
+## DEV    micro:  83.01 macro:  62.49
