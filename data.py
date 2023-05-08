@@ -54,10 +54,14 @@ class Sentence(object):
                 features.append("isPunct")
             if ext.isNNP():
                 features.append("isNNP")
+            if ext.isCapitalized():
+                features.append("isCapitalized")
+            #
             for f,v in ext.case().items():
                 if v is True:
                     features.append(f)
             token.features = features
+           
 
 
 class LoadOntoNotes:
