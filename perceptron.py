@@ -32,7 +32,11 @@ class Perceptron(object):
     def fit(self, train, dev, learning_rate, nepochs, lr_decay=0.0, minff=5, maxff=float("+inf")):
         """
         Input: list of sentences, list of sentences, ...
-        
+        Parameters: train set, dev set, learning rate, number of epochs,
+                    learning rate decay (iteratively reduces LR after each epoch),
+                    minimum feature frequency (features ocurring
+                    less than 5 times ignored), maximum feature frequency. 
+                    
         Estimates new weights from train data.
         Reports evaulation on dev data each epoch.
         Returns list of train and dev metrics over the epochs.
