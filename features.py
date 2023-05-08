@@ -64,10 +64,10 @@ class featureExt:
         return features
     
     def isNNP(self):
-    """
-    Checks if the token and the next one's first character are each capitalized.
-    Eg: Los Angeles.
-    """
+        """
+        Checks if the token and the next one's first character are each capitalized.
+        Eg: Los Angeles.
+        """
         index = self.sent.tokens.index(self.token)
         if index + 1 < len(self.sent.tokens):
             next_token = self.sent.tokens[index + 1]
