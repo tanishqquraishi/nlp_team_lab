@@ -72,4 +72,4 @@ class featureExt:
         if index + 1 < len(self.sent.tokens):
             next_token = self.sent.tokens[index + 1]
             return self.token.text[0].isupper() and next_token.text[0].isupper()
-       return None
+        return None
