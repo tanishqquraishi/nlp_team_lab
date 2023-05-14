@@ -27,19 +27,20 @@ class Sentence(object):
         for token in self.tokens:
             ext = featureExt(token, self)
             features = []
-            # lexical? features
+            # suffix features
+            s = ext.suffix(1)       ## New: Like last character of token, maybe helpfull for plural Nouns
+            if s is not None:
+                features.append(s)
             s = ext.suffix(2)
             if s is not None:
                 features.append(s)
-            #
             s = ext.suffix(3)
             if s is not None:
                 features.append(s)
-            #
+            # prefix
             s = ext.prefix(2)
             if s is not None:
                 features.append(s)
-            #
             s = ext.prefix(3)
             if s is not None:
                 features.append(s)
@@ -52,16 +53,18 @@ class Sentence(object):
                 features.append("isDigit")
             if ext.isPunct():
                 features.append("isPunct")
-            if ext.isNNP():
-                features.append("isNNP")
+                features.append("punctType="+token.text)       ## New: Gives the Punctuation itself, helpfull for '', or brackets
             if ext.isCapitalized():
                 features.append("isCapitalized")
             #
             for f,v in ext.case().items():
                 if v is True:
                     features.append(f)
+            #
+            if ext.isNNP():
+                features.append("isNNP")
             token.features = features
-           
+    
 
 
 class LoadOntoNotes:

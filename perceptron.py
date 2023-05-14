@@ -13,6 +13,10 @@ class Perceptron(object):
         self.weights = None
     
     def _count_feautres(self, tokens):
+        """
+        Counts each feature from a list of tokens.
+        Returns dictionary with features as keys and counts as values.
+        """
         counts = dict()
         for t in tokens:
             for f in t.features:
@@ -22,6 +26,9 @@ class Perceptron(object):
         return counts
     
     def _evaluate(self, tokens):
+        """
+        Given a list of tokens, do an evaluation
+        """
         pred_tokens = [self.scores(token.features)[0] for token in tokens]
         gold_tokens = [token.gold_label for token in tokens]
         ev = ConfusionMatrix.from_data(gold_tokens, pred_tokens, nan=0)
@@ -42,7 +49,7 @@ class Perceptron(object):
         Returns list of train and dev metrics over the epochs.
         """
         
-        ## Count all classes in train (add UNK)
+        ## Count all classes in trains
         self.classes = tuple(set([t.gold_label for t in train]))
         ## Count all features
         counts = self._count_feautres(train)
@@ -63,23 +70,26 @@ class Perceptron(object):
             random.shuffle(train)
             ## Iterate each example
             for i,example in enumerate(train, start=1):
-                # predict output scores (with current weights)
-                _,pred = self.scores(example.features)
-                # calculate update for each class
-                for ptag, pscore in pred.items():
-                    # calculate update direction for this class
-                    if ptag==example.gold_label:
-                        d = 1-pscore
-                    else:
-                        d = 0-pscore
-                    # update each feature for this class
-                    for f in example.features:
-                        try: # try is faster than if check for keys in dict
-                            self.weights[ptag][f] += d*learning_rate
-                        except KeyError:
-                            pass
+                ##
                 if i%20000==0:
                     print("Iteration: {:<7d}".format(i))
+                # predict output (with current weights)
+                pred_tag,_ = self.scores(example.features)
+                gold_tag = example.gold_label
+                # If prediction is correct, do nothing
+                if pred_tag==gold_tag:
+                    continue
+                for f in example.features:
+                    # Else, increase weights at feature positions for gold
+                    try: # try is faster than if check for keys in dict
+                        self.weights[gold_tag][f] += learning_rate
+                    except KeyError:
+                        pass
+                    # and decrease weights at feature positions for prediction
+                    try:
+                        self.weights[pred_tag][f] -= learning_rate
+                    except KeyError:
+                        pass
             # update learning rate
             learning_rate *= (1.0-lr_decay)
             print("LEARNING RATE is now", learning_rate)
@@ -98,7 +108,7 @@ class Perceptron(object):
     def scores(self, feat_vec):
         """
         Takes a feature vector.
-        And returns a score for each class and the predicted tag
+        And returns the predicted tag and a score for each class
         """
         scores = {t:0 for t in self.classes}
         for feat in feat_vec:

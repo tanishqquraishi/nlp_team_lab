@@ -21,15 +21,15 @@ class featureExt:
         """
         Checks if it's the first token in the sentence. 
         """
-        return self.sent.tokens[0].text == self.token.text
-
+        return self.sent.tokens[0] == self.token  # Removed .text here, comparing the objects instead of the texts is more precises. Eg. if a token appears multiple times in a sentence.
+    
     def isLast(self):
         """
         Checks if it's the last token in the sentence, excludes punct.
         """
         punct = [".", "!", "?", "..."]
-        return self.token.text not in punct and self.sent.tokens[-1].text == self.token.text
-
+        return self.token.text not in punct and self.sent.tokens[-1] == self.token  # Removed .text here, comparing the objects instead of the texts is more precises. Eg. if a token appears multiple times in a sentence.
+    
     def isDigit(self):
         """
         Checks if characters in a token are digits.
@@ -39,22 +39,20 @@ class featureExt:
             if char.isdigit():
                 return True
             return False 
-
-
+    
     def isPunct(self):
         """
         Checks if token is a punctuation. Excludes hyphen.
         """
-        punct = [".", ",", "!", "?", "'", ";", "...", ":", "/", "``"]
+        punct = [".", ",", "!", "?", "'", ";", "...", ":", "/", "``", ")", "(", "[", "]", "{", "}"]
         return self.token.text in punct
-
-    def isCapitalized(self): ## maybe rename this function, eg. typos
-                                ## resolved
+    
+    def isCapitalized(self):
         """
-        Checks if token is capitalized and excludes first token in the sentence.        
+        Checks if token is capitalized and excludes first token in the sentence.
         """
         return self.token.text[0].isupper() and not self.isFirst()
-
+    
     def case(self):
         features = {}
         features['is_all_uppercase'] = self.token.text.isupper()

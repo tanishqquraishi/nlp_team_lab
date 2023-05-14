@@ -4,7 +4,6 @@ from perceptron import Perceptron
 ## Load data
 train_data = LoadOntoNotes("./train.col").get_sentences()
 dev_data   = LoadOntoNotes("./dev.col").get_sentences()
-print("'{}' ({}): {}".format(train_data[0].tokens[0].text, train_data[0].tokens[0].gold_label, train_data[0].tokens[0].features))
 
 
 ## Extract features on sentence level
@@ -12,7 +11,12 @@ for s in train_data:
     s.extract_features()
 for s in dev_data:
     s.extract_features()
-print("'{}' ({}): {}".format(train_data[0].tokens[0].text, train_data[0].tokens[0].gold_label, train_data[0].tokens[0].features))
+    
+## Print some example sentence
+print()
+for t in train_data[0].tokens:
+    print("{:10s} ({:4s}): {}".format(t.text, t.gold_label, t.features))
+print()
 
 
 ## Get single tokens
@@ -23,7 +27,7 @@ print("'{}' ({}): {}".format(train[0].text, train[0].gold_label, train[0].featur
 
 ## Train model (TBD)
 model = Perceptron()
-train_hist = model.fit(train, dev, learning_rate=0.001, nepochs=10, lr_decay=0.01)
+train_hist = model.fit(train, dev, learning_rate=1, nepochs=10, lr_decay=0.01)
 #model.save(".../.../") (TBD)
 
 ## For model selection and testing
