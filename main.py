@@ -22,14 +22,15 @@ print()
 ## Get single tokens
 train = [token for sent in train_data for token in sent.tokens]
 dev   = [token for sent in dev_data   for token in sent.tokens]
-print("'{}' ({}): {}".format(train[0].text, train[0].gold_label, train[0].features))
 
 
 ## Train model (TBD)
 model = Perceptron()
-train_hist = model.fit(train, dev, learning_rate=1, nepochs=10, lr_decay=0.01)
-
+train_hist = model.fit(train, dev, learning_rate=1, nepochs=5, lr_decay=0.01)
 #model.save(".../.../") (TBD)
+
+print("FINAL EVAL ON DEV DATA")
+print(model._evaluate(dev))
 
 ## For model selection and testing
 #model.predict_data(dev) (TBD)

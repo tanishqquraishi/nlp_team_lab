@@ -34,7 +34,8 @@ class Perceptron(object):
         ev = ConfusionMatrix.from_data(gold_tokens, pred_tokens, nan=0)
         macro = ev.macro_f1()
         micro = ev.micro_f1()
-        return macro, micro
+        expanded = ev.f1_scores()
+        return macro, micro, expanded
     
     def fit(self, train, dev, learning_rate, nepochs, lr_decay=0.0, minff=5, maxff=float("+inf")):
         """
@@ -94,11 +95,11 @@ class Perceptron(object):
             learning_rate *= (1.0-lr_decay)
             print("LEARNING RATE is now", learning_rate)
             # Evaluate
-            macro, micro = self._evaluate(train)
+            macro, micro, _ = self._evaluate(train)
             print("Epoch: {:<3d}   TRAIN   micro: {:6.2f} macro: {:6.2f}".format(e, micro["F1"], macro["F1"]))
             train_eval = {"microF1":micro["F1"], "macroF1":macro["F1"]}
             #
-            macro, micro = self._evaluate(dev)
+            macro, micro, _ = self._evaluate(dev)
             print("Epoch: {:<3d}     DEV   micro: {:6.2f} macro: {:6.2f}".format(e, micro["F1"], macro["F1"]))
             dev_eval = {"microF1":micro["F1"], "macroF1":macro["F1"]}
             #
