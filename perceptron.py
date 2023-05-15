@@ -74,7 +74,7 @@ class Perceptron(object):
                 if i%20000==0:
                     print("Iteration: {:<7d}".format(i))
                 # predict output (with current weights)
-                pred_tag,_ = self.scores(example.features)
+                pred_tag,_ = self.predict(example.features)
                 gold_tag = example.gold_label
                 # If prediction is correct, do nothing
                 if pred_tag==gold_tag:
@@ -105,7 +105,7 @@ class Perceptron(object):
             train_history.append({"train":train_eval, "dev":dev_eval})
         return train_history
     
-    def scores(self, feat_vec):
+    def predict(self, feat_vec):
         """
         Takes a feature vector.
         And returns the predicted tag and a score for each class
