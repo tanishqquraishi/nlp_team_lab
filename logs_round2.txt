@@ -1,0 +1,9 @@
+## Second model run
+## First epoch
+Epoch: 0     TRAIN   micro:  88.30 macro:  76.77
+Epoch: 0       DEV   micro:  88.04 macro:  80.66
+
+##
+Epoch: 4     TRAIN   micro:  87.73 macro:  76.54
+Epoch: 4       DEV   micro:  87.14 macro:  77.51
+
