@@ -29,7 +29,7 @@ class Perceptron(object):
         """
         Given a list of tokens, do an evaluation
         """
-        pred_tokens = [self.scores(token.features)[0] for token in tokens]
+        pred_tokens = [self.predict(token.features)[0] for token in tokens]
         gold_tokens = [token.gold_label for token in tokens]
         ev = ConfusionMatrix.from_data(gold_tokens, pred_tokens, nan=0)
         macro = ev.macro_f1()
