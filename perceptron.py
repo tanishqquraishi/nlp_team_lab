@@ -71,7 +71,7 @@ class Perceptron(object):
             random.shuffle(train)
             ## Iterate each example
             for i,example in enumerate(train, start=1):
-                ##
+                # Note: maybe we output just epochs and not the iterations 
                 if i%20000==0:
                     print("Iteration: {:<7d}".format(i))
                 # predict output (with current weights)
