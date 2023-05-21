@@ -7,6 +7,20 @@ class featureExt:
         self.token = token 
         self.sent =  sent
     
+    def tokenText(self, pos):
+        """
+        Adds a tokens surface form as a features.
+        If pos==0: Current Token.
+        If pos==-1: Previous Token
+        If pos==1: Next token
+        ...
+        """
+        index = self.sent.tokens.index(self.token)
+        if 0 <= index+pos < len(self.sent.tokens):
+            token = self.sent.tokens[index+pos].text
+            return "token({})={}".format(pos, token)
+        return "token({})=None".format(pos)
+    
     def prefix(self, n):
         if len(self.token.text)>=n:
             return "prefix="+self.token.text[:n]

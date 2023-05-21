@@ -27,6 +27,9 @@ class Sentence(object):
         for token in self.tokens:
             ext = featureExt(token, self)
             features = []
+            # current,prev. and next token
+            features.append(ext.tokenText(1))
+            features.append(ext.tokenText(-1))
             # suffix features
             s = ext.suffix(1)       ## New: Like last character of token, maybe helpfull for plural Nouns
             if s is not None:
