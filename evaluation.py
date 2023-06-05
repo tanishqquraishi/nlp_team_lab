@@ -128,10 +128,10 @@ class ConfusionMatrix(object):
         else:
             ## Select only tags with confusions for printing
             all_tags = []
-            for t in self.all_tags:
-                confs = self.get_confusions(t)
-                if any([c!=0 for c in confs.values()]):
-                    all_tags.append(t)
+            for t1 in self.all_tags:
+                confs = self.get_confusions(t1)
+                if any([c!=0 for t2, c in confs.items() if t2!=t1]):
+                    all_tags.append(t1)
         ## Do printing
         print(" ".join(["      ",]+["{:^6s}".format(t) for t in all_tags]))
         for t1 in all_tags:

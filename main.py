@@ -30,7 +30,7 @@ dev   = [token for sent in dev_data   for token in sent.tokens]
 
 ## Train model
 model = Perceptron()
-train_hist = model.fit(train, dev, learning_rate=1, nepochs=1, lr_decay=0.01)
+train_hist = model.fit(train, dev, learning_rate=1, nepochs=5, lr_decay=0.01)
 
 
 ## Evaluate on dev data
