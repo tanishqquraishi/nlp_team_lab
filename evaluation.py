@@ -116,6 +116,30 @@ class ConfusionMatrix(object):
         scores["R"] /= len(self.confusions)
         scores["F1"] /= len(self.confusions)
         return scores
+    
+    def print(self, ignore_perfect=True):
+        """
+        Prints out the confusion matrix.
+        To hide zero-rows set ignore_perfect=True
+        """
+        if ignore_perfect is False:
+            ## Select all tags for printing
+            all_tags = self.all_tags
+        else:
+            ## Select only tags with confusions for printing
+            all_tags = []
+            for t in self.all_tags:
+                confs = self.get_confusions(t)
+                if any([c!=0 for c in confs.values()]):
+                    all_tags.append(t)
+        ## Do printing
+        print(" ".join(["      ",]+["{:^6s}".format(t) for t in all_tags]))
+        for t1 in all_tags:
+            confs = self.get_confusions(t1)
+            print("{:>6s}".format(t1,), end=" ")
+            for t2 in all_tags:
+                print("{:^6d}".format(confs[t2]), end=" ")
+            print()
 
 
 if __name__ == "__main__":

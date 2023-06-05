@@ -1,0 +1,23 @@
+Starting estimation for 48 classes and 27424 features and 731677 train examples
+LEARNING RATE is now 0.99
+Epoch: 0     TRAIN   micro:  93.47 macro:  83.75
+Epoch: 0       DEV   micro:  92.54 macro:  86.45
+LEARNING RATE is now 0.9801
+Epoch: 1     TRAIN   micro:  94.20 macro:  85.27
+Epoch: 1       DEV   micro:  92.78 macro:  85.43
+LEARNING RATE is now 0.9702989999999999
+Epoch: 2     TRAIN   micro:  94.96 macro:  86.87
+Epoch: 2       DEV   micro:  93.55 macro:  85.45
+LEARNING RATE is now 0.96059601
+Epoch: 3     TRAIN   micro:  95.52 macro:  88.90
+Epoch: 3       DEV   micro:  93.92 macro:  88.39
+LEARNING RATE is now 0.9509900498999999
+Epoch: 4     TRAIN   micro:  95.57 macro:  91.16
+Epoch: 4       DEV   micro:  94.00 macro:  88.11
+
+
+
+
+
+
+
