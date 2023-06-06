@@ -68,6 +68,20 @@ class Sentence(object):
                 features.append("isNNP")
             token.features = features
     
+    def str(self):
+        text = [t.text for t in self.tokens]
+        gold = [t.gold_label for t in self.tokens]
+        pred = [str(t.pred_label) for t in self.tokens]
+        width = [max(len(text[i]),len(gold[i]),len(pred[i])) for i in range(len(self.tokens))]
+        
+        o1,o2,o3 = "","",""
+        for t,g,p,w in zip(text, gold, pred, width):
+            o1 += ("  {:"+str(w)+"s}").format(t)
+            o2 += ("  {:"+str(w)+"s}").format(g)
+            o3 += ("  {:"+str(w)+"s}").format(p)
+        m = max(len(o1),len(o2),len(o3))
+        o =  ("-"*m+"\n"+o1+"\n"+"-"*m+"\n"+o2+"\n"+"-"*m+"\n"+o3+"\n"+"-"*m+"\n")
+        return o
 
 
 class LoadOntoNotes:

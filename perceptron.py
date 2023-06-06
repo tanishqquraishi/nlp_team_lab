@@ -37,18 +37,6 @@ class Perceptron(object):
         expanded = ev.f1_scores()
         return macro, micro, expanded
     
-    def evaluate(self, sentences):
-        """
-        Given a list of sentences, returns a confusion matrix
-        """
-        pred_tokens = []
-        gold_tokens = []
-        for sent in sentences:
-            pred_tokens.extend([self.predict(token.features)[0] for token in sent.tokens])
-            gold_tokens.extend([token.gold_label for token in sent.tokens])
-        
-        return ConfusionMatrix.from_data(gold_tokens, pred_tokens, nan=0)
-    
     def fit(self, train, dev, learning_rate, nepochs, lr_decay=0.0, minff=5, maxff=float("+inf")):
         """
         Input: list of sentences, list of sentences, ...
@@ -132,5 +120,15 @@ class Perceptron(object):
                     pass
         max_tag,_ = max(scores.items(), key=lambda x:x[1])
         return max_tag,scores
-
+    
+    def predict_sentences(self, data):
+        """
+        Given a list of sentence objects.
+        Preict each token and store result in respective token object.
+        """
+        for sent in data:
+            for token in sent.tokens:
+                ptag,_ = self.predict(token.features)
+                token.pred_label = ptag
+        return sent
 

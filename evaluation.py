@@ -43,18 +43,51 @@ class ConfusionMatrix(object):
             if g not in conf:
                 conf[g] = dict()
             if p not in conf[g]:
-                conf[g][p] = 0
-            conf[g][p] += 1
+                conf[g][p] = [0, None]
+            conf[g][p][0] += 1
             all_tags.update([g,p])
         # Add missing zero-entries 
         # (eg. if a tag occures only in gold or in only prediction)
         for t in all_tags:
             if t not in conf:
-                conf[t] = {k:0 for k in all_tags}
+                conf[t] = {k:[0, None] for k in all_tags}
             else:
                 for k in all_tags:
                     if k not in conf[t]:
-                        conf[t][k] = 0
+                        conf[t][k] = [0, None]
+        ##
+        return ConfusionMatrix(conf, all_tags, nan)
+    
+    @staticmethod
+    def from_sentences(data, nan=None):
+        """
+        Create a new confusion matrix from a lists of predicted sentence objects.
+        Also stores sentences where error occured.
+        For what 'nan' is doing, please check the constructor.
+        """
+        # Count confusions and collect all used tags
+        conf = dict()
+        all_tags = set()
+        for sent in data:
+            gold = [token.gold_label for token in sent.tokens]
+            pred = [token.pred_label for token in sent.tokens]
+            for g,p in zip(gold,pred):
+                if g not in conf:
+                    conf[g] = dict()
+                if p not in conf[g]:
+                    conf[g][p] = [0, []]
+                conf[g][p][0] += 1
+                conf[g][p][1].append(sent) # store sentence where error occured
+                all_tags.update([g,p])
+        # Add missing zero-entries 
+        # (eg. if a tag occures only in gold or in only prediction)
+        for t in all_tags:
+            if t not in conf:
+                conf[t] = {k:[0, []] for k in all_tags}
+            else:
+                for k in all_tags:
+                    if k not in conf[t]:
+                        conf[t][k] = [0, []]
         ##
         return ConfusionMatrix(conf, all_tags, nan)
     
@@ -66,13 +99,16 @@ class ConfusionMatrix(object):
         confs = dict(self.confusions[tag])
         return confs
     
+    def get_sentences(self, gold, pred):
+        return list(self.confusions[gold][pred][1])
+    
     def errors(self, tag):
         """
         Returns the number of errors for 'tag'.
         """
-        TP = self.confusions[tag][tag]
-        FP = sum([self.confusions[tag][k] for k in self.all_tags if k!=tag])
-        FN = sum([self.confusions[k][tag] for k in self.all_tags if k!=tag])
+        TP = self.confusions[tag][tag][0]
+        FP = sum([self.confusions[tag][k][0] for k in self.all_tags if k!=tag])
+        FN = sum([self.confusions[k][tag][0] for k in self.all_tags if k!=tag])
         return {"TP":TP, "FP":FP, "FN":FN}
     
     def f1_scores(self):
@@ -130,15 +166,15 @@ class ConfusionMatrix(object):
             all_tags = []
             for t1 in self.all_tags:
                 confs = self.get_confusions(t1)
-                if any([c!=0 for t2, c in confs.items() if t2!=t1]):
+                if any([c[0]!=0 for t2, c in confs.items() if t2!=t1]):
                     all_tags.append(t1)
-        ## Do printing
-        print(" ".join(["      ",]+["{:^6s}".format(t) for t in all_tags]))
+        ## Do printing 
+        print(" ".join(["      ",]+["{:^6s}".format(t) for t in self.all_tags]))
         for t1 in all_tags:
             confs = self.get_confusions(t1)
             print("{:>6s}".format(t1,), end=" ")
-            for t2 in all_tags:
-                print("{:^6d}".format(confs[t2]), end=" ")
+            for t2 in self.all_tags:
+                print("{:^6d}".format(confs[t2][0]), end=" ")
             print()
 
 
