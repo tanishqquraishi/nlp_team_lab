@@ -1,3 +1,8 @@
+"""
+___date__: 23 / 04 / 2023
+__author__: Florian Omiecienski (code), Tanishq Quraishi (docstrings, comments)
+
+"""
 class ConfusionMatrix(object):
     """
     An evaluation class.
