@@ -1,4 +1,7 @@
 """
+___date__: 30 / 04 / 2023
+__author__: Florian Omiecienski
+
 """
 
 from evaluation import ConfusionMatrix
