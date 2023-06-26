@@ -1,4 +1,8 @@
+"""
+___date__: 30 / 04 / 2023
+__author__: Tanishq Quraishi and Florian Omiecienski
 
+"""
 class featureExt:
     """
     A class for extracting features from tokens in a sentence.
