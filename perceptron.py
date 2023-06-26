@@ -1,6 +1,6 @@
 """
 ___date__: 30 / 04 / 2023
-__author__: Florian Omiecienski
+__author__: Florian Omiecienski (code), Tanishq Quraishi (docstrings, comments)
 
 """
 
