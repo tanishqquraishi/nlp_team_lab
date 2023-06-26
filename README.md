@@ -25,7 +25,7 @@
   
 # **Project Status**
 
-  Building domain adaptation techniques after the completion of the baseline.
+  Currently building domain adaptation techniques after the completion of the baseline.
   
 # **Sources**
 
