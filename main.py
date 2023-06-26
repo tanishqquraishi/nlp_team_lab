@@ -1,3 +1,9 @@
+"""
+___date__: 24 / 04 / 2023
+__author__: Florian Omiecienski
+
+"""
+
 from data import LoadOntoNotes
 from perceptron import Perceptron
 from evaluation import ConfusionMatrix
