@@ -30,8 +30,8 @@ for t in twitter_train[0].tokens:
 print()
 
 ## Train model (OntoNotes)
-model = Perceptron()
-train_hist = model.fit([token for sent in ontoNotes_train for token in sent.tokens], 
+p = Perceptron()
+train_hist = p.fit([token for sent in ontoNotes_train for token in sent.tokens], 
                        [token for sent in ontoNotes_dev   for token in sent.tokens],
                        learning_rate=1, nepochs=5, lr_decay=0.01)
 #
@@ -46,8 +46,8 @@ print("MacroF1: {:6.2f}  MicroF1: {:6.2f}".format(ev.macro_f1()["F1"], ev.micro_
 
 
 # Train model (Twitter)
-model = Perceptron()
-train_hist = model.fit([token for sent in twitter_train for token in sent.tokens], 
+p = Perceptron()
+train_hist = p.fit([token for sent in twitter_train for token in sent.tokens], 
                        [token for sent in twitter_dev   for token in sent.tokens],
                        learning_rate=1, nepochs=5, lr_decay=0.01)
 #
