@@ -5,6 +5,7 @@ __author__: Tanishq Quraishi and Florian Omiecienski
 """
 from features import featureExt
 
+from datasets import load_dataset
 
 
 class Token(object):
@@ -87,6 +88,25 @@ class Sentence(object):
         m = max(len(o1),len(o2),len(o3))
         o =  ("-"*m+"\n"+o1+"\n"+"-"*m+"\n"+o2+"\n"+"-"*m+"\n"+o3+"\n"+"-"*m+"\n")
         return o
+
+
+def load_TwitterPos():
+    """
+    Returns train,dev and test split of the Ritter Dataset.
+    For details see  https://huggingface.co/datasets/strombergnlp/twitter_pos
+    """
+    ##
+    data = load_dataset("strombergnlp/twitter_pos", "ritter")
+    train = data["train"]
+    dev = data["validation"]
+    test = data["test"]
+    pos_tags = train.features["pos_tags"].feature.names
+    ##
+    train = [Sentence([Token(text=t, gold_label=pos_tags[l]) for t,l in zip(s["tokens"], s["pos_tags"])]) for s in train]
+    dev = [Sentence([Token(text=t, gold_label=pos_tags[l]) for t,l in zip(s["tokens"], s["pos_tags"])]) for s in dev]
+    test = [Sentence([Token(text=t, gold_label=pos_tags[l]) for t,l in zip(s["tokens"], s["pos_tags"])]) for s in test]
+    #
+    return train, dev, test
 
 
 class LoadOntoNotes:
