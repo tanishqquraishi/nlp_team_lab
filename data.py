@@ -26,10 +26,10 @@ class Sentence(object):
     def __init__(self, tokens):
         self.tokens = tokens
 
-    def copy(self):
+    def copy(self, name):
         for tokens in self.tokens:
-            features = []
-            copy_features(features).append(features)
+            #features = []
+            featureExt(None, None).copy_features(tokens, name) #.append(features)
         return tokens  
     
     def extract_features(self):
@@ -141,7 +141,7 @@ def load_TwitterPos():
     dev = [Sentence([Token(text=t, gold_label=pos_tags[l]) for t,l in zip(s["tokens"], s["pos_tags"])]) for s in dev]
     test = [Sentence([Token(text=t, gold_label=pos_tags[l]) for t,l in zip(s["tokens"], s["pos_tags"])]) for s in test]
     #
-    #return train, dev, test
+    return train, dev, test
 
 
 class LoadOntoNotes:
