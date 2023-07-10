@@ -3,7 +3,7 @@ ___date__: 23 / 04 / 2023
 __author__: Tanishq Quraishi and Florian Omiecienski
 
 """
-from features import featureExt
+from features import featureExt, copy_features 
 
 from datasets import load_dataset
 
@@ -25,17 +25,31 @@ class Sentence(object):
     """
     def __init__(self, tokens):
         self.tokens = tokens
+
+    def copy(self):
+        for tokens in self.tokens:
+            features = []
+            copy_features(features).append(features)
+        return tokens  
     
-    def extract_features(self,):
+    def extract_features(self):
         """
         Extracts features for each token in this sentence.
         """
         for token in self.tokens:
             ext = featureExt(token, self)
             features = []
+
             # current,prev. and next token
             features.append(ext.tokenText(1))
             features.append(ext.tokenText(-1))
+            
+            # features.append(ext.tokenText_Onto(1))
+            # features.append(ext.tokenText_Onto(-1))
+            # features.append(ext.tokenText_Twitter(1))
+            # features.append(ext.tokenText_Twitter(-1))
+
+
             # suffix features
             s = ext.suffix(1)       ## New: Like last character of token, maybe helpfull for plural Nouns
             if s is not None:
@@ -46,33 +60,53 @@ class Sentence(object):
             s = ext.suffix(3)
             if s is not None:
                 features.append(s)
+
+            
             # prefix
+
+            s = ext.prefix(1)
+            if s is not None:
+                features.append(s)
             s = ext.prefix(2)
             if s is not None:
                 features.append(s)
             s = ext.prefix(3)
             if s is not None:
                 features.append(s)
+
             #
+
             if ext.isFirst():
                 features.append("isFirst")
+           
             if ext.isLast():
                 features.append("isLast")
+           
+            #
             if ext.isDigit():
                 features.append("isDigit")
+            
+            
+            #
             if ext.isPunct():
                 features.append("isPunct")
                 features.append("punctType="+token.text)       ## New: Gives the Punctuation itself, helpfull for '', or brackets
+            
+            #
             if ext.isCapitalized():
                 features.append("isCapitalized")
             #
             for f,v in ext.case().items():
                 if v is True:
                     features.append(f)
+
             #
             if ext.isNNP():
                 features.append("isNNP")
             token.features = features
+
+           
+
     
     def str(self):
         text = [t.text for t in self.tokens]
@@ -101,12 +135,13 @@ def load_TwitterPos():
     dev = data["validation"]
     test = data["test"]
     pos_tags = train.features["pos_tags"].feature.names
+    print(pos_tags)
     ##
     train = [Sentence([Token(text=t, gold_label=pos_tags[l]) for t,l in zip(s["tokens"], s["pos_tags"])]) for s in train]
     dev = [Sentence([Token(text=t, gold_label=pos_tags[l]) for t,l in zip(s["tokens"], s["pos_tags"])]) for s in dev]
     test = [Sentence([Token(text=t, gold_label=pos_tags[l]) for t,l in zip(s["tokens"], s["pos_tags"])]) for s in test]
     #
-    return train, dev, test
+    #return train, dev, test
 
 
 class LoadOntoNotes:
