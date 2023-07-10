@@ -3,7 +3,7 @@ ___date__: 23 / 04 / 2023
 __author__: Tanishq Quraishi and Florian Omiecienski
 
 """
-from features import featureExt, copy_features 
+from features import featureExt
 
 from datasets import load_dataset
 
