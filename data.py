@@ -141,7 +141,7 @@ def load_TwitterPos():
     dev = [Sentence([Token(text=t, gold_label=pos_tags[l]) for t,l in zip(s["tokens"], s["pos_tags"])]) for s in dev]
     test = [Sentence([Token(text=t, gold_label=pos_tags[l]) for t,l in zip(s["tokens"], s["pos_tags"])]) for s in test]
     #
-    #return train, dev, test
+    return train, dev, test
 
 
 class LoadOntoNotes:
