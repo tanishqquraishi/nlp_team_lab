@@ -126,13 +126,16 @@ class ConfusionMatrix(object):
             scores[tag] = self.errors2scores(err)
         return scores
     
-    def micro_f1(self):
+    def micro_f1(self, exclude=None):
         """
         Returns a micro averaged scores.
         """
         # first collect errors for all tags
         err = {"TP":0, "FP":0, "FN":0}
         for tag in self.confusions:
+            if (exclude is not None):
+                if tag in exclude:
+                    continue
             err_ = self.errors(tag)
             err["TP"] += err_["TP"]
             err["FP"] += err_["FP"]
@@ -140,22 +143,29 @@ class ConfusionMatrix(object):
         # calculate evalution scores from errors
         return self.errors2scores(err)
     
-    def macro_f1(self):
+    def macro_f1(self, exclude=None):
         """
         Returns macro averaged scores.
         """
         # Calculte scores for each tag
         scores = {"P":0, "R":0, "F1":0}
+        tagCounter = 0
         for tag in self.confusions:
+            if (exclude is not None):
+                if tag in exclude:
+                    #print("EXCL:",tag)
+                    continue
+                    
+            tagCounter += 1
             err = self.errors(tag)
             scores_ = self.errors2scores(err)
             scores["P"]  += scores_["P"] 
             scores["R"]  += scores_["R"] 
             scores["F1"] += scores_["F1"]
         # and average them later on
-        scores["P"] /= len(self.confusions)
-        scores["R"] /= len(self.confusions)
-        scores["F1"] /= len(self.confusions)
+        scores["P"]  /= tagCounter
+        scores["R"]  /= tagCounter
+        scores["F1"] /= tagCounter
         return scores
     
     def print(self, ignore_perfect=True):

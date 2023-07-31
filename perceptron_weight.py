@@ -10,6 +10,7 @@ import random
 
 class PerceptronWeight(object):
     """
+    A perceptron that weights examples during training according to src and tgt dataset sizes.
     """
     
     def __init__(self,):
@@ -58,7 +59,7 @@ class PerceptronWeight(object):
         train = [(e, "src") for e in src_train]+[(e, "tgt") for e in tgt_train]
         ## Count all classes in trains
         self.classes = tuple(set([t.gold_label for t in src_train+tgt_train]))
-        ## Count all features
+        ## Count ALL features
         counts = self._count_feautres(src_train+tgt_train)
         # keep only features seen often but not too often (minff, maxff)
         for f in list(counts.keys()):

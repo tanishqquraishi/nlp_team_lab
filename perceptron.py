@@ -10,6 +10,7 @@ import random
 
 class Perceptron(object):
     """
+    A perceptron.
     """
     
     def __init__(self,):

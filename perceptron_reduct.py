@@ -11,25 +11,11 @@ import numpy as np
 
 class PerceptronReduct(object):
     """
+    A perceptron that trains only on tgt data features.
     """
     
     def __init__(self,):
         self.weights = None
-    
-    def _feature_class_distribution(self, tokens):
-        counts = dict()
-        for t in tokens:
-            c = t.gold_label
-            for f in t.features:
-                try:
-                    tmp = counts[f]
-                except KeyError:
-                    counts[f] = tmp = dict()
-                try:
-                    tmp[c] += 1.0
-                except KeyError:
-                    tmp[c] = 1.0
-        return counts
     
     def _count_feautres(self, tokens):
         """
@@ -75,37 +61,13 @@ class PerceptronReduct(object):
         dev = src_dev+tgt_dev
         ## Count all feature-class cooccurences in trains
         self.classes = tuple(set([t.gold_label for t in train]))
-        ## Use all features from both domain
-        self.features = tuple(set([f for t in train for f in t.features]))
-        ## For all features that appear in both domains, calculate similarity of class distributions, as feature-weight
-        dist_src = self._feature_class_distribution(src_train)
-        dist_tgt = self._feature_class_distribution(tgt_train)
-        ##
-        class_intersection = set([t.gold_label for t in src_train]).intersection(set([t.gold_label for t in tgt_train]))
-        feature_weights = dict()
-        for k in self.features:
-            if (k not in dist_tgt):
-                feature_weights[k] = 0.5
-                continue
-            if k not in dist_src:
-                feature_weights[k] = 1.0
-                continue
-            a = np.array([dist_src[k][c] if c in dist_src[k] else 0.0 for c in class_intersection])
-            b = np.array([dist_tgt[k][c] if c in dist_tgt[k] else 0.0for c in class_intersection])
-            an = np.linalg.norm(a)
-            bn = np.linalg.norm(b)
-            if (an == 0) or (bn == 0):
-                feature_weights[k] = 0.5
-            else:
-                feature_weights[k] = 0.5 + (np.dot(a,b)/(an*bn))
-        
-
-        ## Set features-weights that occure only in target domain to 1
-        for f in self.features:
-            try:
-                tmp = feature_weights[f]
-            except KeyError:
-                feature_weights[f] = 1
+        ## Count ONLY features from TARGTET domain
+        counts = self._count_feautres(tgt_train)
+        # keep only features seen often but not too often (minff, maxff)
+        for f in list(counts.keys()):
+            if (counts[f]<minff) or (counts[f]>maxff):
+                del counts[f]
+        self.features = tuple(counts.keys())
         ## Init new weights (trainable parameters)
         self.weights = {c:{f:0 for f in self.features} for c in self.classes}
         print("Starting estimation for {} classes and {} features and {} train examples".format(len(self.classes), len(self.features), len(train)))
@@ -126,22 +88,21 @@ class PerceptronReduct(object):
                 for f in example.features:
                     # Else, increase weights at feature positions for gold
                     try: # try is faster than if check for keys in dict
-                        self.weights[gold_tag][f] += learning_rate*feature_weights[f] ## weight by feature
+                        self.weights[gold_tag][f] += learning_rate
                     except KeyError:
                         pass
-                    # and decrease weights at feature positions for prediction
+                    # and decrease weights at feature positions for predicted class
                     try:
-                        self.weights[pred_tag][f] -= learning_rate*feature_weights[f] ## weight by feature
+                        self.weights[pred_tag][f] -= learning_rate
                     except KeyError:
                         pass
             # update learning rate
             learning_rate *= (1.0-lr_decay)
             print("LEARNING RATE is now", learning_rate)
             # Evaluate
-            #macro, micro, _ = self._evaluate(train)
-            #print("Epoch: {:<3d}       TRAIN   micro: {:6.2f} macro: {:6.2f}".format(e, micro["F1"], macro["F1"]))
-            #train_eval = {"microF1":micro["F1"], "macroF1":macro["F1"]}
-            train_eval = None
+            macro, micro, _ = self._evaluate(train)
+            print("Epoch: {:<3d}       TRAIN   micro: {:6.2f} macro: {:6.2f}".format(e, micro["F1"], macro["F1"]))
+            train_eval = {"microF1":micro["F1"], "macroF1":macro["F1"]}
             #
             macro, micro, _ = self._evaluate(src_dev)
             print("Epoch: {:<3d}     DEV-SRC   micro: {:6.2f} macro: {:6.2f}".format(e, micro["F1"], macro["F1"]))
